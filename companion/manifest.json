@@ -1,0 +1,27 @@
+{
+	"$schema": "../node_modules/@companion-module/base/assets/manifest.schema.json",
+	"type": "connection",
+	"id": "iina-remote",
+	"name": "IINA Remote",
+	"shortname": "IINA",
+	"description": "Control IINA for macOS and receive live playback status",
+	"version": "0.4.1",
+	"license": "MIT",
+	"repository": "git+https://github.com/houtacheng/companion-module-iina-remote.git",
+	"bugs": "https://github.com/houtacheng/companion-module-iina-remote/issues",
+	"maintainers": [
+		{
+			"name": "Kongshan"
+		}
+	],
+	"runtime": {
+		"type": "node22",
+		"api": "nodejs-ipc",
+		"apiVersion": "2.1.0",
+		"entrypoint": "../dist/main.js"
+	},
+	"legacyIds": [],
+	"manufacturer": "IINA",
+	"products": ["IINA Companion Remote Plugin"],
+	"keywords": ["video", "playback", "macOS", "media player", "websocket"]
+}
