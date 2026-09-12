@@ -25,6 +25,7 @@ type IncomingMessage = {
 	folder?: string
 	files?: unknown
 	players?: unknown
+	playerId?: string | null
 }
 
 export type MediaFile = { label: string; path: string }
@@ -40,6 +41,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	mediaFiles: MediaFile[] = []
 	mediaFolder = ''
 	playerWindows: PlayerWindow[] = []
+	activePlayerId = ''
 
 	private socket?: WebSocket
 	private reconnectTimer?: NodeJS.Timeout
@@ -58,7 +60,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		this.updateFeedbacks()
 		this.updatePresets()
 		this.updateVariableDefinitions()
-		this.setVariableValues({ media_folder: '', media_file_count: 0 })
+		this.setVariableValues({ media_folder: '', media_file_count: 0, active_player_id: '', player_window_count: 0 })
 		this.publishState()
 		this.connect()
 	}
@@ -194,6 +196,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		}
 
 		if (message.type === 'state' || message.type === 'command_result') {
+			if (message.playerId) this.activePlayerId = message.playerId
 			if (message.state) this.applyState(message.state)
 			if (message.type === 'command_result' && message.ok === false) {
 				const detail = typeof message.error === 'string' ? message.error : message.error?.message
@@ -231,6 +234,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 							typeof value === 'object' && value !== null && typeof (value as PlayerWindow).id === 'string',
 					)
 				: []
+			this.setVariableValues({ player_window_count: this.playerWindows.length })
 			this.updateActions()
 			return
 		}
@@ -288,6 +292,11 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			subtitle_visible: state.subtitleVisible,
 			loop_file: state.loopFile,
 			loop_playlist: state.loopPlaylist,
+			filename: state.filename || state.title,
+			video_info: state.videoInfo || '',
+			end_behavior: state.endBehavior || 'hold',
+			active_player_id: this.activePlayerId,
+			player_window_count: this.playerWindows.length,
 		})
 	}
 

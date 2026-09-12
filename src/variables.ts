@@ -37,6 +37,11 @@ export type VariablesSchema = {
 	subtitle_visible: boolean
 	loop_file: string
 	loop_playlist: string
+	filename: string
+	video_info: string
+	end_behavior: string
+	active_player_id: string
+	player_window_count: number
 }
 
 export function UpdateVariableDefinitions(self: ModuleInstance): void {
@@ -77,5 +82,10 @@ export function UpdateVariableDefinitions(self: ModuleInstance): void {
 		subtitle_visible: { name: '字幕是否顯示' },
 		loop_file: { name: '單檔循環狀態' },
 		loop_playlist: { name: '播放清單循環狀態' },
+		filename: { name: '目前檔名' },
+		video_info: { name: '影片格式資訊' },
+		end_behavior: { name: '播放完畢行為' },
+		active_player_id: { name: '目前播放器 ID' },
+		player_window_count: { name: '播放器視窗數量' },
 	})
 }

@@ -29,6 +29,14 @@ export type IinaPlaybackState = {
 	subtitleVisible: boolean
 	loopFile: string
 	loopPlaylist: string
+	endBehavior?: string
+	filename?: string
+	videoInfo?: string
+	audioTracks?: Array<{ id: number; label: string; language?: string; codec?: string }>
+	subtitleTracks?: Array<{ id: number; label: string; language?: string; codec?: string }>
+	playlistItems?: Array<{ id: number; label: string; filename?: string; url?: string }>
+	chapters?: Array<{ id: number; title: string; time: number }>
+	screens?: Array<{ id: number; label: string }>
 	timestamp: number
 }
 

@@ -1,6 +1,7 @@
 import type ModuleInstance from './main.js'
 
 export type ActionsSchema = {
+	select_player: { options: { playerId: string } }
 	play_media_window: {
 		options: {
 			playerId: string
@@ -44,6 +45,24 @@ export type ActionsSchema = {
 
 export function UpdateActions(self: ModuleInstance): void {
 	self.setActionDefinitions({
+		select_player: {
+			name: '選擇目前控制的 IINA 視窗',
+			options: [
+				{
+					id: 'playerId',
+					type: 'dropdown',
+					label: '播放視窗',
+					default: self.playerWindows[0]?.id || '',
+					choices: self.playerWindows.length
+						? self.playerWindows.map((player) => ({ id: player.id, label: player.label || `視窗 ${player.id}` }))
+						: [{ id: '', label: '尚未偵測到播放視窗' }],
+				},
+			],
+			callback: async (event) => {
+				const playerId = String(event.options.playerId || '')
+				if (playerId) self.sendCommand('select_player', { playerId })
+			},
+		},
 		play_media_window: {
 			name: '在指定視窗與螢幕播放媒體',
 			options: [
