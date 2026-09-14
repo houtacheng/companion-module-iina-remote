@@ -5,20 +5,20 @@
 	"name": "IINA Remote",
 	"shortname": "IINA",
 	"description": "Control IINA for macOS and receive live playback status",
-	"version": "0.0.0",
+	"version": "0.5.0",
 	"license": "MIT",
 	"repository": "git+https://github.com/houtacheng/companion-module-iina-remote.git",
 	"bugs": "https://github.com/houtacheng/companion-module-iina-remote/issues",
 	"maintainers": [
 		{
-			"name": "Kongshan",
+			"name": "H.T-C",
 			"email": "houtacheng@gmail.com"
 		}
 	],
 	"runtime": {
 		"type": "node22",
 		"api": "nodejs-ipc",
-		"apiVersion": "0.0.0",
+		"apiVersion": "2.1.0",
 		"entrypoint": "../dist/main.js"
 	},
 	"legacyIds": [],
