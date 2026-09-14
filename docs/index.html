@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>IINA Companion Remote｜Mac 多視窗播放控制</title>
+  <meta name="description" content="用 Bitfocus Companion 遠端控制 Mac 上的 IINA：選檔、指定視窗與螢幕、倒數、循環及播完關閉。">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23091016'/%3E%3Cpath d='M19 15h8v34h-8zm18 0h8v34h-8z' fill='%23ffb000'/%3E%3Cpath d='M27 22l15 10-15 10z' fill='%23f5f7fa'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="hero-image.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="回到頁首"><span class="brand-mark">I▶</span><span>IINA Companion Remote</span></a>
+    <button class="menu-button" aria-expanded="false" aria-controls="nav">選單</button>
+    <nav id="nav" aria-label="主要導覽">
+      <a href="#features">功能</a><a href="#install">安裝</a><a href="#workflow">多視窗教學</a><a href="#troubleshooting">疑難排解</a>
+    </nav>
+    <a class="nav-download" href="#download">下載 0.5.0</a>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> MAC 播放器 × 現場控制</p>
+        <h1>讓每一個 IINA 視窗，<br><em>都成為可控的播放通道。</em></h1>
+        <p class="lede">在另一台電腦使用 Bitfocus Companion，遠端選擇影片、指定播放視窗與螢幕，並即時取得播放狀態與剩餘秒數。</p>
+        <div class="hero-actions"><a class="button primary" href="#install">開始安裝</a><a class="button secondary" href="https://github.com/houtacheng/iina-companion-remote" target="_blank" rel="noreferrer">查看 GitHub ↗</a></div>
+        <ul class="compat"><li>Companion 5.x</li><li>IINA 1.4.4+</li><li>macOS 10.15+</li></ul>
+      </div>
+      <figure class="hero-shot"><img src="images/companion-controls.png" alt="Bitfocus Companion 的 IINA 播放控制按鈕，包含播放、暫停、停止、跳轉、選曲、靜音及全螢幕控制" width="1510" height="1480"><figcaption>實際 Companion 控制介面</figcaption></figure>
+    </section>
+
+    <section id="features" class="section">
+      <div class="section-title"><p>WHAT IT DOES</p><h2>一套為現場播放設計的控制橋接</h2></div>
+      <div class="feature-grid">
+        <article><b>01</b><h3>媒體資料夾</h3><p>在 Companion 直接選擇 IINA Mac 上的影片；預設按鈕會顯示檔名。</p></article>
+        <article><b>02</b><h3>多視窗管理</h3><p>建立具名視窗，或選擇已開啟的播放器，讓不同內容各自運作。</p></article>
+        <article><b>03</b><h3>指定輸出螢幕</h3><p>將目標視窗送到螢幕 1–4，並直接進入全螢幕播放。</p></article>
+        <article><b>04</b><h3>播完自動處理</h3><p>可選保留視窗、關閉視窗或無限循環，符合不同播出情境。</p></article>
+        <article><b>05</b><h3>即時狀態</h3><p>取得檔名、播放／暫停、時間、音量及整數剩餘秒數。</p></article>
+        <article><b>06</b><h3>安全連線</h3><p>以配對金鑰驗證 WebSocket 連線，適合可信任的區域網路或 VPN。</p></article>
+      </div>
+    </section>
+
+    <section id="download" class="download-band">
+      <div><p class="eyebrow"><span></span> CURRENT RELEASE</p><h2>下載 0.5.0</h2><p>兩邊都要安裝：IINA Mac 使用外掛，Companion 主機匯入模組。</p></div>
+      <div class="downloads">
+        <a href="https://github.com/houtacheng/iina-companion-remote/releases/tag/v0.5.0" target="_blank" rel="noreferrer"><small>安裝在播放電腦</small><strong>IINA 外掛</strong><span>.iinaplgz　下載 ↗</span></a>
+        <a href="https://github.com/houtacheng/companion-module-iina-remote/releases/tag/v0.5.0" target="_blank" rel="noreferrer"><small>匯入 Companion 5.x</small><strong>Companion 模組</strong><span>.tgz　下載 ↗</span></a>
+      </div>
+    </section>
+
+    <section id="install" class="section tutorial">
+      <div class="section-title"><p>SETUP GUIDE</p><h2>第一次安裝，照這五步完成</h2></div>
+      <ol class="steps">
+        <li><div class="step-number">1</div><div><h3>安裝 IINA 外掛</h3><p>下載並打開 <code>iina-companion-remote-0.5.0.iinaplgz</code>。完成後完全結束 IINA，再重新開啟。</p></div></li>
+        <li><div class="step-number">2</div><div><h3>設定媒體資料夾</h3><p>前往「IINA → 設定 → 外掛 → Companion Remote」，選擇存放影片的資料夾，並複製配對金鑰。</p><aside>提醒：更新外掛後若檔案清單為空，請先確認媒體資料夾仍有設定。</aside></div></li>
+        <li><div class="step-number">3</div><div><h3>匯入 Companion 模組</h3><p>在 Companion 5.x 的 Modules 頁面選擇 Import module package，匯入下載的 <code>iina-remote-0.5.0.tgz</code>。</p></div></li>
+        <li><div class="step-number">4</div><div><h3>建立連線</h3><p>新增 IINA Remote 連線，主機位址只填 IINA Mac 的 IP，例如 <code>192.168.1.50</code>；連接埠預設 <code>19190</code>，再貼上配對金鑰。</p></div></li>
+        <li><div class="step-number">5</div><div><h3>更新媒體清單</h3><p>執行「更新媒體檔案清單」，或重新連線。看到檔名選單後即可建立播放按鈕。</p></div></li>
+      </ol>
+    </section>
+
+    <section id="workflow" class="section workflow">
+      <div class="section-title"><p>MULTI-WINDOW WORKFLOW</p><h2>一個按鈕，決定整條播放路徑</h2></div>
+      <div class="action-card">
+        <div class="action-top"><span>IINA</span><strong>在指定視窗與螢幕播放媒體</strong></div>
+        <div class="field-grid">
+          <label><span>播放視窗</span><div>建立新視窗⌄</div></label>
+          <label><span>新視窗名稱</span><div>主畫面</div></label>
+          <label class="wide"><span>媒體檔案</span><div>opening-film.mp4⌄</div></label>
+          <label><span>播放起點</span><div>☑ 從頭播放</div></label>
+          <label><span>輸出位置</span><div>螢幕 2 全螢幕⌄</div></label>
+          <label class="wide"><span>播放完畢</span><div>關閉視窗⌄</div></label>
+        </div>
+      </div>
+      <div class="workflow-notes"><article><span>A</span><h3>重複使用視窗</h3><p>第一次選「建立新視窗」並命名。視窗出現在清單後，其他按鈕可直接指定它。</p></article><article><span>B</span><h3>觸發其他設備</h3><p>使用 <code>remaining_seconds</code> 變數；當數值為 0 時，可由 Companion 觸發下一個動作。</p></article><article><span>C</span><h3>固定循環內容</h3><p>播放完畢選「循環播放」，適合環境影片、展場視覺與等待畫面。</p></article></div>
+    </section>
+
+    <section id="troubleshooting" class="section troubleshooting">
+      <div class="section-title"><p>TROUBLESHOOTING</p><h2>連不上或看不到檔案？</h2></div>
+      <details open><summary>Companion 顯示無法連線</summary><p>確認 IINA 已完全重新啟動、外掛已啟用、IP 與 19190 連接埠正確。兩台電腦必須位於可互通的區域網路或 VPN。</p></details>
+      <details><summary>顯示「尚未取得媒體清單」</summary><p>回到 IINA 外掛偏好設定重新選擇媒體資料夾，再於 Companion 執行「更新媒體檔案清單」。</p></details>
+      <details><summary>配對金鑰不正確</summary><p>從 IINA 外掛設定重新複製完整金鑰，貼到 Companion 的配對金鑰欄位，避免前後空格。</p></details>
+      <details><summary>無法送到指定螢幕</summary><p>確認 macOS 已辨識所有顯示器。螢幕編號依 IINA／macOS 回報順序排列，可依序測試螢幕 1、2、3、4。</p></details>
+      <div class="network-note"><strong>網路安全</strong><p>目前使用未加密的 <code>ws://</code>。請只在可信任的 LAN 或 VPN 使用，不要直接把 19190 對外公開。</p></div>
+    </section>
+  </main>
+
+  <footer><div><strong>IINA Companion Remote</strong><p>Open-source remote playout control for macOS.</p></div><div><a href="https://github.com/houtacheng/iina-companion-remote" target="_blank" rel="noreferrer">IINA Plugin ↗</a><a href="https://github.com/houtacheng/companion-module-iina-remote" target="_blank" rel="noreferrer">Companion Module ↗</a></div></footer>
+  <script src="script.js"></script>
+</body>
+</html>

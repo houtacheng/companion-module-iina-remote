@@ -8,3 +8,5 @@ multiple named IINA player windows, target-display fullscreen playback, looping,
 Requires the matching [IINA Companion Remote plugin](https://github.com/houtacheng/iina-companion-remote).
 
 Build with `yarn install`, then `yarn package`. Import the generated `.tgz` from Companion → Modules → Import module package.
+
+Downloads and the setup guide: https://houtacheng.github.io/companion-module-iina-remote/
