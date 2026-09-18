@@ -8,6 +8,32 @@ const dark = combineRgb(25, 25, 25)
 
 export function UpdatePresets(self: ModuleInstance): void {
 	const presets: CompanionPresetDefinitions<ModuleSchema> = {
+		controller_visibility: {
+			type: 'simple',
+			name: '顯示／隱藏 Remote Controller',
+			style: {
+				text: 'Remote\n顯示／隱藏',
+				size: 'auto',
+				color: white,
+				bgcolor: combineRgb(45, 65, 90),
+				show_topbar: false,
+			},
+			steps: [{ down: [{ actionId: 'controller_visibility', options: { operation: 'toggle' } }], up: [] }],
+			feedbacks: [],
+		},
+		controller_mode: {
+			type: 'simple',
+			name: '切換完整／精簡控制台',
+			style: {
+				text: 'Remote\n完整／精簡',
+				size: 'auto',
+				color: white,
+				bgcolor: combineRgb(45, 65, 90),
+				show_topbar: false,
+			},
+			steps: [{ down: [{ actionId: 'controller_mode', options: { operation: 'toggle' } }], up: [] }],
+			feedbacks: [],
+		},
 		play: {
 			type: 'simple',
 			name: '播放',
@@ -25,7 +51,7 @@ export function UpdatePresets(self: ModuleInstance): void {
 		toggle: {
 			type: 'simple',
 			name: '播放／暫停',
-			style: { text: '▶ / Ⅱ', size: 'auto', color: white, bgcolor: dark, show_topbar: false },
+			style: { text: '▶︎/❙❙', size: 'auto', color: white, bgcolor: dark, show_topbar: false },
 			steps: [{ down: [{ actionId: 'transport', options: { operation: 'toggle_play_pause' } }], up: [] }],
 			feedbacks: [
 				{ feedbackId: 'is_playing', options: {}, style: { color: white, bgcolor: combineRgb(0, 150, 70) } },
@@ -175,6 +201,8 @@ export function UpdatePresets(self: ModuleInstance): void {
 			id: 'display',
 			name: '狀態與顯示',
 			definitions: [
+				'controller_visibility',
+				'controller_mode',
 				'status',
 				'countdown',
 				'mute',

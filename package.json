@@ -1,6 +1,6 @@
 {
   "name": "iina-remote",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Control IINA over the Companion Remote WebSocket plugin",
   "main": "dist/main.js",
   "type": "module",

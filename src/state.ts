@@ -30,6 +30,7 @@ export type IinaPlaybackState = {
 	loopFile: string
 	loopPlaylist: string
 	endBehavior?: string
+	playbackMode?: string
 	filename?: string
 	videoInfo?: string
 	audioTracks?: Array<{ id: number; label: string; language?: string; codec?: string }>

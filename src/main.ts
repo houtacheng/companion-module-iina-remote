@@ -45,8 +45,14 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 
 	private socket?: WebSocket
 	private reconnectTimer?: NodeJS.Timeout
+	private connectionTimer?: NodeJS.Timeout
+	private heartbeatTimer?: NodeJS.Timeout
+	private lastMessageAt = 0
 	private destroyed = false
 	private requestCounter = 0
+	private readonly heartbeatIntervalMs = 5000
+	private readonly heartbeatTimeoutMs = 15000
+	private readonly connectionTimeoutMs = 10000
 
 	constructor(internal: unknown) {
 		super(internal)
@@ -68,6 +74,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	async destroy(): Promise<void> {
 		this.destroyed = true
 		this.clearReconnect()
+		this.clearHealthTimers()
 		this.closeSocket()
 	}
 
@@ -119,11 +126,17 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 
 		this.updateStatus(InstanceStatus.Connecting)
 		this.log('debug', `Connecting to ${url}`)
-		const socket = new WebSocket(url)
+		const socket = new WebSocket(url, { handshakeTimeout: this.connectionTimeoutMs })
 		this.socket = socket
 
 		socket.on('open', () => {
 			if (socket !== this.socket) return
+			this.lastMessageAt = Date.now()
+			this.connectionTimer = setTimeout(() => {
+				if (socket !== this.socket || this.authenticated) return
+				this.log('warn', 'IINA 連線驗證逾時，將自動重新連線')
+				socket.terminate()
+			}, this.connectionTimeoutMs)
 			this.sendRaw({
 				type: 'auth',
 				token: this.secrets.token,
@@ -131,14 +144,23 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			})
 		})
 
-		socket.on('message', (data: RawData) => this.handleMessage(data))
+		socket.on('message', (data: RawData) => {
+			if (socket !== this.socket) return
+			this.handleMessage(data)
+		})
 		socket.on('error', (error) => {
 			if (socket !== this.socket) return
 			this.log('warn', `WebSocket error: ${error.message}`)
+			try {
+				socket.terminate()
+			} catch (_error) {
+				// The close handler will reconnect when possible.
+			}
 		})
 		socket.on('close', () => {
 			if (socket !== this.socket) return
 			this.socket = undefined
+			this.clearHealthTimers()
 			this.authenticated = false
 			this.updateStatus(InstanceStatus.ConnectionFailure, 'IINA 連線中斷')
 			this.publishConnection('disconnected')
@@ -149,6 +171,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	}
 
 	private closeSocket(): void {
+		this.clearHealthTimers()
 		const socket = this.socket
 		this.socket = undefined
 		if (socket) {
@@ -166,6 +189,33 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 		this.reconnectTimer = undefined
 	}
 
+	private clearHealthTimers(): void {
+		if (this.connectionTimer) clearTimeout(this.connectionTimer)
+		if (this.heartbeatTimer) clearInterval(this.heartbeatTimer)
+		this.connectionTimer = undefined
+		this.heartbeatTimer = undefined
+	}
+
+	private startHeartbeat(): void {
+		if (this.connectionTimer) clearTimeout(this.connectionTimer)
+		this.connectionTimer = undefined
+		if (this.heartbeatTimer) clearInterval(this.heartbeatTimer)
+		this.lastMessageAt = Date.now()
+		this.heartbeatTimer = setInterval(() => {
+			const socket = this.socket
+			if (!socket || socket.readyState !== WebSocket.OPEN || !this.authenticated) return
+			if (Date.now() - this.lastMessageAt >= this.heartbeatTimeoutMs) {
+				this.log('warn', 'IINA 心跳逾時，連線已失效，將自動重新連線')
+				this.authenticated = false
+				this.updateStatus(InstanceStatus.ConnectionFailure, 'IINA 沒有回應')
+				this.publishConnection('disconnected')
+				socket.terminate()
+				return
+			}
+			this.sendRaw({ type: 'ping', requestId: this.nextRequestId('heartbeat') })
+		}, this.heartbeatIntervalMs)
+	}
+
 	private handleMessage(data: RawData): void {
 		let message: IncomingMessage
 		try {
@@ -178,10 +228,14 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			this.log('warn', `Invalid message from IINA: ${String(error)}`)
 			return
 		}
+		this.lastMessageAt = Date.now()
 
 		if (message.type === 'auth_result') {
+			if (this.connectionTimer) clearTimeout(this.connectionTimer)
+			this.connectionTimer = undefined
 			if (message.ok) {
 				this.authenticated = true
+				this.startHeartbeat()
 				this.updateStatus(InstanceStatus.Ok)
 				this.publishConnection('connected')
 				if (message.state) this.applyState(message.state)
@@ -295,6 +349,7 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 			filename: state.filename || state.title,
 			video_info: state.videoInfo || '',
 			end_behavior: state.endBehavior || 'hold',
+			playback_mode: state.playbackMode || 'auto_next',
 			active_player_id: this.activePlayerId,
 			player_window_count: this.playerWindows.length,
 		})
@@ -306,8 +361,17 @@ export default class ModuleInstance extends InstanceBase<ModuleSchema> {
 	}
 
 	private sendRaw(message: Record<string, unknown>): boolean {
-		if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return false
-		this.socket.send(JSON.stringify(message))
+		const socket = this.socket
+		if (!socket || socket.readyState !== WebSocket.OPEN) return false
+		socket.send(JSON.stringify(message), (error) => {
+			if (!error || socket !== this.socket) return
+			this.log('warn', `IINA WebSocket 傳送失敗: ${error.message}`)
+			try {
+				socket.terminate()
+			} catch (_error) {
+				// The close handler will reconnect when possible.
+			}
+		})
 		return true
 	}
 

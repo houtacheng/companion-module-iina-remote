@@ -1,6 +1,9 @@
 import type ModuleInstance from './main.js'
 
 export type ActionsSchema = {
+	controller_visibility: { options: { operation: string } }
+	controller_mode: { options: { operation: string } }
+	playback_mode: { options: { mode: string } }
 	select_player: { options: { playerId: string } }
 	play_media_window: {
 		options: {
@@ -45,6 +48,59 @@ export type ActionsSchema = {
 
 export function UpdateActions(self: ModuleInstance): void {
 	self.setActionDefinitions({
+		controller_visibility: {
+			name: '顯示／隱藏 Remote Controller',
+			options: [
+				{
+					id: 'operation',
+					type: 'dropdown',
+					label: '操作',
+					default: 'toggle',
+					choices: [
+						{ id: 'toggle', label: '顯示／隱藏切換' },
+						{ id: 'show', label: '顯示' },
+						{ id: 'hide', label: '隱藏' },
+					],
+				},
+			],
+			callback: async (event) => self.sendCommand('controller_visibility', { operation: event.options.operation }),
+		},
+		controller_mode: {
+			name: '切換 Remote Controller 完整／精簡模式',
+			options: [
+				{
+					id: 'operation',
+					type: 'dropdown',
+					label: '模式',
+					default: 'toggle',
+					choices: [
+						{ id: 'toggle', label: '完整／精簡切換' },
+						{ id: 'full', label: '完整模式' },
+						{ id: 'compact', label: '精簡模式' },
+					],
+				},
+			],
+			callback: async (event) => self.sendCommand('controller_mode', { operation: event.options.operation }),
+		},
+		playback_mode: {
+			name: '設定播放順序／循環模式',
+			options: [
+				{
+					id: 'mode',
+					type: 'dropdown',
+					label: '播放順序',
+					default: 'auto_next',
+					choices: [
+						{ id: 'none', label: '不循環／不自動下一首' },
+						{ id: 'single', label: '單檔循環' },
+						{ id: 'auto_next', label: '依序播放，到清單末端停止' },
+						{ id: 'playlist_loop', label: '清單循環' },
+						{ id: 'shuffle', label: '隨機播放，到清單末端停止' },
+					],
+				},
+			],
+			callback: async (event) => self.sendCommand('set_playback_mode', { mode: event.options.mode }),
+		},
 		select_player: {
 			name: '選擇目前控制的 IINA 視窗',
 			options: [
